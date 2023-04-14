@@ -83,8 +83,9 @@ def join_tournament(request, pk):
         return HttpResponseRedirect(reverse_url)
     else:
         tournament_gamers = TournamentGamer.objects.values().filter(tournament=pk)
-        is_teams = Tournament.objects.values('number_teams').filter(id=pk)[:1]
-        is_teams_list = list(range(is_teams[0]['number_teams'] + 1))
+        tournament_data = Tournament.objects.values().filter(id=pk)[:1]
+        context['tournament'] = tournament_data[0]
+        is_teams_list = list(range(tournament_data[0]['number_teams'] + 1))
         is_teams_list.pop(0)
         context['is_teams'] = is_teams_list
         context['tournament_gamers'] = tournament_gamers
