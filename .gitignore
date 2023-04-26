@@ -6,6 +6,7 @@ __pycache__
 
 .idea
 db.sqlite3
+db.sqlite3_oficial
 */migrations
 media
 
@@ -34,7 +35,7 @@ media
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+*/__pycache__
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
