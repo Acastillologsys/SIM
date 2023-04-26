@@ -37,6 +37,7 @@ media
 .idea/**/dbnavigator.xml
 */__pycache__
 .*/__pycache__/*
+.*/migrations/__pycache__/
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
