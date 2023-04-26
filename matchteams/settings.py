@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'team.apps.TeamConfig',
+    'buildorder.apps.BuildorderConfig',
 ]
 
 MIDDLEWARE = [

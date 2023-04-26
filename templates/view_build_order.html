@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ver Build Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+<body class="bg-dark text-white" >
+    <div class="container">
+        <div class="row my-2">
+            <div class="col-12 text-center">
+                <h5>{{ build_order.name }}</h5>
+                <h6>{{ build_order.description }}</h6>
+            </div>
+            <div class="col-10 mx-auto text-center">
+                <p>Contador de segundos: <span id="contador">0</span></p>
+                <button type="button" class="btn btn-primary" onclick="comenzar();" >Comenzar</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 mx-auto">
+                <form>
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="velocidad">Velocidad del juego</span>
+                        <input type="number" step="0.1" class="form-control" aria-describedby="velocidad" id="velocidad_value" value="{{ build_order.velocidad_juego }}">
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="aldeanos_iniciales">Aldeanos Iniciales</span>
+                        <input type="number" class="form-control" aria-describedby="aldeanos_iniciales" id="aldeanos_iniciales_value" value="{{ build_order.aldeanos_iniciales }}" disabled>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="aldeanos_feudal">Aldeanos Para Pasar A Feudal</span>
+                        <input type="number" class="form-control" aria-describedby="aldeanos_feudal" id="aldeanos_feudal_value" value="{{ build_order.aldeanos_feudal }}" disabled>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="aldeanos_castillos">Aldeanos Para Pasar A Castillos</span>
+                        <input type="number" class="form-control" aria-describedby="aldeanos_castillos" id="aldeanos_castillos_value" value="{{ build_order.aldeanos_castillos }}" disabled>
+                    </div>
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text" id="aldeanos_imperial">Aldeanos Para Pasar A Imperial</span>
+                        <input type="number" class="form-control" aria-describedby="aldeanos_imperial" id="aldeanos_imperial_value" value="{{ build_order.aldeanos_imperial }}" disabled>
+                    </div>
+                    <input type="hidden"  id="list_activities" value="{{ build_order_activity }}" disabled>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 mx-auto my-2" id="contenedor">
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script>
+        var velocidad_juego = parseFloat(document.getElementById('velocidad_value').value);
+        var intervaloID = 0;
+        var num_aldeano = parseInt(document.getElementById('aldeanos_iniciales_value').value) + 1;
+        const limite_feudal = parseInt(document.getElementById('aldeanos_feudal_value').value) -1;
+        const limite_castillos = parseInt(document.getElementById('aldeanos_castillos_value').value) -1;
+        const limite_imperial = parseInt(document.getElementById('aldeanos_imperial_value').value) -1;
+
+        const tiempo_feudal = Math.ceil(130 / velocidad_juego) * 1000;
+        const tiempo_castillos = Math.ceil(160 / velocidad_juego) * 1000;
+        const tiempo_imperial = Math.ceil(190 / velocidad_juego) * 1000;
+        var tiempo_creacion_aldeano = Math.ceil(25 / velocidad_juego) * 1000;
+        var segundos = 0;
+        const audio_aldeano = "" /*new Audio("../../static/aldeano.mp3");*/
+        var lista_django = document.getElementById('list_activities').value;
+        lista_django = lista_django.replace("[", "");
+        lista_django = lista_django.replace("]", "");
+        const lista_audios = lista_django.split(",");
+
+        function convert_duracion(segundos) {
+            var horas = Math.floor(segundos / 3600);
+            var minutos = Math.floor((segundos - (horas * 3600)) / 60);
+            var segundosRestantes = segundos % 60;
+
+            if (horas < 10) {
+                horas = "0" + horas;
+            }
+            if (minutos < 10) {
+                minutos = "0" + minutos;
+            }
+            if (segundosRestantes < 10) {
+                segundosRestantes = "0" + segundosRestantes;
+            }
+
+            return horas + ":" + minutos + ":" + segundosRestantes;
+        }
+
+        function reproducir_audio(nombre, tiempo){
+            console.log(nombre, tiempo)
+            setTimeout(function() {
+                var duracion = convert_duracion((tiempo * 1.7)/ 1000) ;
+                const contenedor = document.getElementById("contenedor");
+                const nuevoItem = document.createElement("li");
+                nuevoItem.appendChild(document.createTextNode(nombre + ' : ' + 'minuto: ' + duracion));
+                contenedor.insertBefore(nuevoItem, contenedor.firstChild);
+
+                var mensaje = new SpeechSynthesisUtterance();
+                mensaje.text = nombre;
+                mensaje.voice = window.speechSynthesis.getVoices()[1];
+                window.speechSynthesis.speak(mensaje);
+                }, tiempo);
+        }
+
+        function comenzar(){
+            var tiempo = 0;
+            console.log(lista_audios)
+            for (let i = 0; i < lista_audios.length; i=i+2) {
+                if(i==0){
+                    var tiempo_lista = 0
+                }else{
+                    if(parseInt(lista_audios[(i+1)]) == -1){
+                        var tiempo_lista = tiempo_feudal;
+                    }else if(parseInt(lista_audios[(i+1)]) == -2){
+                        var tiempo_lista = tiempo_castillos;
+                    }else if(parseInt(lista_audios[(i+1)]) == -3){
+                        var tiempo_lista = tiempo_imperial;
+                    }else if (parseInt(lista_audios[(i+1)-2]) == -1){
+                        var tiempo_lista = tiempo_feudal;
+                    }else if (parseInt(lista_audios[(i+1)-2]) == -2){
+                        var tiempo_lista = tiempo_castillos;
+                    }else if (parseInt(lista_audios[(i+1)-2]) == -3){
+                        var tiempo_lista = tiempo_imperial;
+                    }else if (parseInt(lista_audios[(i+1)-2]) == 0){
+                        var tiempo_lista = parseInt(lista_audios[(i+1)-2]) * tiempo_creacion_aldeano;
+                    }else{
+                        var tiempo_lista = parseInt(lista_audios[(i+1)-2]) * (tiempo_creacion_aldeano * 1.01);
+                        tiempo_lista = tiempo_lista;
+                    }
+                }
+                tiempo = tiempo + tiempo_lista;
+                reproducir_audio(lista_audios[i], tiempo);
+            }
+            intervaloID = setInterval(function(){
+                if((num_aldeano +1)=== limite_feudal){
+                    pase_feudal(intervaloID);
+                }
+                num_aldeano += 1;
+                mostrar_mensaje_crear_aldeano(num_aldeano)
+            }, (tiempo_creacion_aldeano));
+
+            setInterval(function() {
+                segundos++;
+                var duration_game = convert_duracion(segundos)
+                document.getElementById("contador").textContent = duration_game;
+            }, 1000);
+        }
+
+        function pase_feudal(intervaloID_pass){
+            clearInterval(intervaloID_pass);
+            setTimeout(function() {
+                reproducir_audio('pasando a feudal', 0);
+                setTimeout(function() {
+                    aldeanoos_feudal();
+                }, tiempo_feudal - tiempo_creacion_aldeano);
+            }, tiempo_creacion_aldeano);
+        }
+
+
+        function aldeanoos_feudal(){
+            setTimeout(function() {
+                reproducir_audio('pase a feudal completado', 0);
+                }, tiempo_creacion_aldeano);
+
+            intervaloID = setInterval(function(){
+                if((num_aldeano + 1) === limite_castillos){
+                    if(aldeanoos_castillos > 0){
+                        pase_castillos(intervaloID);
+                    }else{
+                        aldeanoos_imperial();
+                    }
+                }
+                num_aldeano += 1;
+                mostrar_mensaje_crear_aldeano(num_aldeano)
+            }, (tiempo_creacion_aldeano));
+        }
+
+        function pase_castillos(intervaloID_pass){
+            clearInterval(intervaloID_pass);
+            setTimeout(function() {
+                reproducir_audio('pasando a castillos', 0);
+                setTimeout(function() {
+                    aldeanoos_castillos();
+                }, tiempo_castillos - tiempo_creacion_aldeano);
+            }, tiempo_creacion_aldeano);
+        }
+
+        function aldeanoos_castillos(){
+            setTimeout(function() {
+                reproducir_audio('pase a castillos completado', 0);
+                }, tiempo_creacion_aldeano);
+
+            intervaloID = setInterval(function(){
+                if((num_aldeano +1) === limite_imperial){
+                    if(aldeanoos_imperial > 0){
+                        pase_imperial(intervaloID);
+                    }else{
+                        aldeanoos_imperial();
+                    }
+                }
+                num_aldeano += 1;
+                mostrar_mensaje_crear_aldeano(num_aldeano)
+            }, (tiempo_creacion_aldeano));
+        }
+
+        function pase_imperial(intervaloID_pass){
+            clearInterval(intervaloID_pass);
+            setTimeout(function() {
+                reproducir_audio('pasando a Imperial', 0);
+                setTimeout(function() {
+                    aldeanoos_imperial();
+                }, tiempo_imperial - tiempo_creacion_aldeano);
+            }, tiempo_creacion_aldeano);
+        }
+
+        function aldeanoos_imperial(){
+            setTimeout(function() {
+                reproducir_audio('pase a imperial completado', 0);
+                }, tiempo_creacion_aldeano);
+
+            intervaloID = setInterval(function(){
+                num_aldeano += 1;
+                mostrar_mensaje_crear_aldeano(num_aldeano)
+            }, (tiempo_creacion_aldeano));
+        }
+
+        function mostrar_mensaje_crear_aldeano(num_aldeano){
+            const nuevoItem = document.createElement("li");
+                nuevoItem.appendChild(document.createTextNode("Crear Aldeano" + num_aldeano));
+                contenedor.insertBefore(nuevoItem, contenedor.firstChild);
+                /*audio_aldeano.volume = 0.3;
+                audio_aldeano.play();*/
+
+                var mensaje = new SpeechSynthesisUtterance();
+                mensaje.text = 'crear aldeano' + num_aldeano;
+                mensaje.voice = window.speechSynthesis.getVoices()[1];
+                window.speechSynthesis.speak(mensaje);
+        }
+    </script>
+</body>
+</body>
+</html>
+

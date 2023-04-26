@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(('team.urls', 'team'), namespace='team')),
     path('team/', include(('team.urls', 'team'), namespace='team')),
+    path('buildorder/', include(('buildorder.urls', 'buildorder'), namespace='buildorder')),
 ]
 
 
