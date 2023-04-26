@@ -36,10 +36,11 @@ media
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 */__pycache__
+.*/__pycache__/*
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
-
+.matchteams/__pycache__
 # File-based project format
 *.iws
 
