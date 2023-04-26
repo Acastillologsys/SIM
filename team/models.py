@@ -8,6 +8,9 @@ class TournamentStatus(models.Model):
     description = models.TextField(default='')
     active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return '%s' % self.name
+
 
 class Tournament(models.Model):
     name = models.CharField(max_length=140)
@@ -16,6 +19,9 @@ class Tournament(models.Model):
     status = models.ForeignKey(TournamentStatus, on_delete=models.DO_NOTHING)
     number_teams = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return '%s' % self.name
 
 
 class TournamentGamer(models.Model):
@@ -32,6 +38,9 @@ class TournamentGamer(models.Model):
     gamer_4_elo = models.IntegerField(default=1000)
     active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return '%s' % self.name
+
 
 class TournamentJourney(models.Model):
     journey = models.IntegerField(default=0)
@@ -41,3 +50,6 @@ class TournamentJourney(models.Model):
     wins_local_gamer = models.IntegerField(default=0)
     wins_visitor_gamer = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return '%s' % self.tournament.name
