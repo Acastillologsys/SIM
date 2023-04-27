@@ -79,7 +79,7 @@ def join_tournament(request, pk):
                                        gamer_1_elo=gamer_1_elo, gamer_2=gamer_2, gamer_2_elo=gamer_2_elo,
                                        gamer_3=gamer_3, gamer_3_elo=gamer_3_elo, gamer_4=gamer_4,
                                        gamer_4_elo=gamer_4_elo)
-        reverse_url = "../team/view_tournament"
+        reverse_url = "../view_tournament"
         return HttpResponseRedirect(reverse_url)
     else:
         tournament_gamers = TournamentGamer.objects.values().filter(tournament=pk)
@@ -108,7 +108,7 @@ def create_tournament_journey(request, pk):
                                              tournament=tournament)
     status = TournamentStatus.objects.get(id=2)
     Tournament.objects.filter(id=pk).update(status=status)
-    reverse_url = "../team/view_tournament_journey/" + str(pk)
+    reverse_url = "../view_tournament_journey/" + str(pk)
     return HttpResponseRedirect(reverse_url)
 
 
