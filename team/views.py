@@ -107,7 +107,7 @@ def create_tournament_journey(request, pk):
             TournamentJourney.objects.create(journey=journey_number, local_gamer=local, visitor_gamer=visitante,
                                              tournament=tournament)
     status = TournamentStatus.objects.get(id=2)
-    Tournament.objects.values(id=pk).update(status=status)
+    Tournament.objects.filter(id=pk).update(status=status)
     reverse_url = "../team/view_tournament_journey/" + str(pk)
     return HttpResponseRedirect(reverse_url)
 
