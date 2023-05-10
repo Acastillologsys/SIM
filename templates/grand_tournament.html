@@ -22,8 +22,7 @@
                 <div class="col-3  border-end mx-auto">
                     <h5>{{general.tournament}}</h5>
                     {% for tg in general.tabla_general %}
-
-                            <p>{{ tg.lugar }}.-{{ tg.gamer }} : {{ tg.points }}</p>
+                            <p style="font-size: x-small;" >{{ tg.lugar }}.-{{ tg.gamer }} : {{ tg.points }}</p>
                     {% endfor %}
                 </div>
             {% endfor %}
@@ -34,7 +33,7 @@
                     {% for jornadas in general.jornadas %}
                         <h6>Jornada {{ forloop.counter }} </h6>
                         {% for jornada in jornadas %}
-                        <p><span class="badge text-bg-primary">{{jornada.wins_local_gamer}}</span> {{jornada.local_gamer}} - {{jornada.visitor_gamer}} <span class="badge text-bg-primary">{{jornada.wins_visitor_gamer}}</span></p>
+                        <p style="font-size: x-small;" ><span class="badge text-bg-primary">{{jornada.wins_local_gamer}}</span> {{jornada.local_gamer}} - {{jornada.visitor_gamer}} <span class="badge text-bg-primary">{{jornada.wins_visitor_gamer}}</span></p>
                         {% endfor %}
                     {% endfor %}
                 </div>
