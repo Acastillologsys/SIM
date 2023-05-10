@@ -28,6 +28,9 @@ def view_grand_tournament(request, pk):
             flag_journey += 1
             jornadas = list(TournamentJourney.objects.values().filter(tournament=data['tournament'], journey=flag_journey))
             if len(jornadas) > 0:
+                for jj in jornadas:
+                    streams = Stream.objects.values().filter(tournament_journey=jj['id'])
+                    jj['streams'] = streams
                 list_jornadas.append(jornadas)
         tabla_general_data = tabla_general(data['tournament'])
 

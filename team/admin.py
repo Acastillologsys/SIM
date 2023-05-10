@@ -5,6 +5,8 @@ admin.site.register(TournamentStatus)
 admin.site.register(TournamentGamer)
 admin.site.register(Tournament)
 admin.site.register(TournamentJourney)
+admin.site.register(Stream)
+
 
 
 

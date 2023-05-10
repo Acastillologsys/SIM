@@ -29,7 +29,37 @@
                     {% for jornadas in general.jornadas %}
                         <h6>Jornada {{ forloop.counter }} </h6>
                         {% for jornada in jornadas %}
-                        <p><span class="badge text-bg-primary">{{jornada.wins_local_gamer}}</span> {{jornada.local_gamer}} - {{jornada.visitor_gamer}} <span class="badge text-bg-primary">{{jornada.wins_visitor_gamer}}</span></p>
+                        <p>
+                            <span class="badge text-bg-primary">{{jornada.wins_local_gamer}}</span> 
+                            {{jornada.local_gamer}} - {{jornada.visitor_gamer}} 
+                            <span class="badge text-bg-primary">{{jornada.wins_visitor_gamer}}</span> 
+                            <span> <a type="button" class="btn btn-sm btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#stream{{jornada.id}}">Stream</a> </span> 
+                        </p>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="stream{{jornada.id}}" tabindex="-1" aria-labelledby="stream{{jornada.id}}Label" aria-hidden="true">
+                            <div class="modal-dialog modal-fullscreen">
+                            <div class="modal-content text-black">
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="stream{{jornada.id}}Label">
+                                    Streams
+                                </h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    {% for stream in  jornada.streams %}
+                                    <h6>{{stream.description}}</h6>
+                                    <h5>Streamer: {{stream.streamer}}</h5>
+                                    <iframe width="auto" height="80%" src="{{stream.link}}" frameborder="0" allowfullscreen></iframe>
+                                    {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+
                         {% endfor %}
                     {% endfor %}
                 </div>

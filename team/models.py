@@ -52,4 +52,16 @@ class TournamentJourney(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return '%s' % self.tournament.name
+        return '%s %s - %s' % (self.tournament.name, self.local_gamer, self.visitor_gamer)
+
+
+class Stream(models.Model):
+    """streams"""
+    tournament_journey = models.ForeignKey(TournamentJourney, on_delete=models.DO_NOTHING)
+    link = models.TextField(default='')
+    description = models.TextField(default='')
+    streamer = models.CharField(max_length=250, default='Desconocido')
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return '%s %s - %s' % (self.tournament_journey.tournament.name, self.tournament_journey.local_gamer  ,self.tournament_journey.visitor_gamer )
