@@ -38,7 +38,7 @@
 
                         <!-- Modal -->
                         <div class="modal fade" id="stream{{jornada.id}}" tabindex="-1" aria-labelledby="stream{{jornada.id}}Label" aria-hidden="true">
-                            <div class="modal-dialog modal-fullscreen">
+                            <div class="modal-dialog">
                             <div class="modal-content text-black">
                                 <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="stream{{jornada.id}}Label">
@@ -46,7 +46,7 @@
                                 </h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body text-center">
+                                <div class="modal-body">
                                     {% for stream in  jornada.streams %}
                                     <h6>{{stream.description}}</h6>
                                     <h5>Streamer: {{stream.streamer}}</h5>
