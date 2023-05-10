@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'team.apps.TeamConfig',
     'buildorder.apps.BuildorderConfig',
+    'tournaments.apps.TournamentsConfig',
 ]
 
 MIDDLEWARE = [

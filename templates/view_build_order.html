@@ -16,6 +16,7 @@
             <div class="col-10 mx-auto text-center">
                 <p>Contador de segundos: <span id="contador">0</span></p>
                 <button type="button" class="btn btn-primary" onclick="comenzar();" >Comenzar</button>
+                <button type="button" class="btn btn-primary" onclick="pausar();" >Pausar</button>
             </div>
         </div>
         <div class="row">
@@ -62,7 +63,7 @@
         const tiempo_feudal = Math.ceil(130 / velocidad_juego) * 1000;
         const tiempo_castillos = Math.ceil(160 / velocidad_juego) * 1000;
         const tiempo_imperial = Math.ceil(190 / velocidad_juego) * 1000;
-        var tiempo_creacion_aldeano = Math.ceil(25 / velocidad_juego) * 1000;
+        var tiempo_creacion_aldeano = Math.ceil(25.50 / velocidad_juego) * 1000;
         var segundos = 0;
         const audio_aldeano = "" /*new Audio("../../static/aldeano.mp3");*/
         var lista_django = document.getElementById('list_activities').value;
@@ -133,6 +134,16 @@
                 tiempo = tiempo + tiempo_lista;
                 reproducir_audio(lista_audios[i], tiempo);
             }
+            aldeanoos_media();
+
+            setInterval(function() {
+                segundos++;
+                var duration_game = convert_duracion(segundos)
+                document.getElementById("contador").textContent = duration_game;
+            }, 1000);
+        }
+
+        function aldeanoos_media(){
             intervaloID = setInterval(function(){
                 if((num_aldeano +1)=== limite_feudal){
                     pase_feudal(intervaloID);
@@ -140,12 +151,6 @@
                 num_aldeano += 1;
                 mostrar_mensaje_crear_aldeano(num_aldeano)
             }, (tiempo_creacion_aldeano));
-
-            setInterval(function() {
-                segundos++;
-                var duration_game = convert_duracion(segundos)
-                document.getElementById("contador").textContent = duration_game;
-            }, 1000);
         }
 
         function pase_feudal(intervaloID_pass){
@@ -166,7 +171,7 @@
 
             intervaloID = setInterval(function(){
                 if((num_aldeano + 1) === limite_castillos){
-                    if(aldeanoos_castillos > 0){
+                    if(limite_castillos > 0){
                         pase_castillos(intervaloID);
                     }else{
                         aldeanoos_imperial();
@@ -194,7 +199,7 @@
 
             intervaloID = setInterval(function(){
                 if((num_aldeano +1) === limite_imperial){
-                    if(aldeanoos_imperial > 0){
+                    if(limite_imperial > 0){
                         pase_imperial(intervaloID);
                     }else{
                         aldeanoos_imperial();
@@ -226,6 +231,21 @@
             }, (tiempo_creacion_aldeano));
         }
 
+        function pausar(){
+            clearInterval(intervaloID);
+            setTimeout(function() {
+                    if(num_aldeano < limite_feudal){
+                        aldeanoos_media();
+                    }else if(num_aldeano < limite_castillos){
+                        aldeanoos_feudal();
+                    }else if(num_aldeano < limite_imperial){
+                        aldeanoos_castillos();
+                    }else{
+                        aldeanoos_imperial();
+                    }
+                }, (tiempo_creacion_aldeano / 4));
+        }
+
         function mostrar_mensaje_crear_aldeano(num_aldeano){
             const nuevoItem = document.createElement("li");
                 nuevoItem.appendChild(document.createTextNode("Crear Aldeano" + num_aldeano));
@@ -238,6 +258,9 @@
                 mensaje.voice = window.speechSynthesis.getVoices()[1];
                 window.speechSynthesis.speak(mensaje);
         }
+
+
+
     </script>
 </body>
 </body>
